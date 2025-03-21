@@ -1,5 +1,5 @@
 project(Hypodermic)
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.13)
 
 
 set(Hypodermic_headers
@@ -102,24 +102,31 @@ set(Hypodermic_headers
     With.h
 )
 
+if(${HYPODERMIC_COPY_HEADER_TO_BINARY_DIR})
 
-install(FILES ${Hypodermic_headers} DESTINATION include/Hypodermic)
+    file(COPY ${Hypodermic_headers} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/Hypodermic)
 
-#########################################
-# pkgconfig
-#########################################
-set(VERSION "${HYPODERMIC_VERSION}")
-set(prefix "${CMAKE_INSTALL_PREFIX}")
-set(exec_prefix "\${prefix}")
-set(includedir "\${prefix}/include")
-configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/libhypodermic.pc.in
-    ${CMAKE_CURRENT_BINARY_DIR}/libhypodermic.pc
-@ONLY)
+endif()
 
-install(
-    FILES ${CMAKE_CURRENT_BINARY_DIR}/libhypodermic.pc
-    DESTINATION lib/pkgconfig
-)
+if(NOT ${HYPODERMIC_NO_INSTALL})
 
+    install(FILES ${Hypodermic_headers} DESTINATION include/Hypodermic)
 
+    #########################################
+    # pkgconfig
+    #########################################
+    set(VERSION "${HYPODERMIC_VERSION}")
+    set(prefix "${CMAKE_INSTALL_PREFIX}")
+    set(exec_prefix "\${prefix}")
+    set(includedir "\${prefix}/include")
+    configure_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/libhypodermic.pc.in
+        ${CMAKE_CURRENT_BINARY_DIR}/libhypodermic.pc
+    @ONLY)
+
+    install(
+        FILES ${CMAKE_CURRENT_BINARY_DIR}/libhypodermic.pc
+        DESTINATION lib/pkgconfig
+    )
+
+endif()
